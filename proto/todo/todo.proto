@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package todo;
+
+option go_package = "todo/proto";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+// Message for a to do item
+message ToDo {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  bool done = 4;
+}
+
+// Message for creating to do items
+message CreateToDoRequest {
+  ToDo todo = 1;
+}
+
+// Message for updating to do items
+message UpdateToDoRequest {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  bool done = 4;
+}
+
+// Message to fetch a to do item
+message GetToDoRequest {
+  string id = 1;
+}
+
+// Message to fetch all to do items
+message ListToDoRequest {}
+
+// Message for a list of to do items
+message ListToDoResponse {
+  repeated ToDo todos = 1;
+}
+
+// Service for managing to do items
+service ToDoService {
+  // Create a to do item
+  rpc CreateToDo (CreateToDoRequest) returns (ToDo) {
+    option (google.api.http) = {
+      post: "/v1/todo"
+      body: "*"
+    };
+  }
+
+  // Update a to do item
+  rpc UpdateToDo (UpdateToDoRequest) returns (ToDo) {
+    option (google.api.http) = {
+      put: "/v1/todo/{id}"
+      body: "*"
+    };
+  }
+
+  // Get a to do item
+  rpc GetToDo (GetToDoRequest) returns (ToDo) {
+    option (google.api.http) = {
+      get: "/v1/todo/{id}"
+    };
+  }
+
+  // List all to do items
+  rpc ListToDo (google.protobuf.Empty) returns (ListToDoResponse) {
+    option (google.api.http) = {
+      get: "/v1/todo"
+    };
+  }
+
+  // Delete a To Do item
+  rpc DeleteToDo (GetToDoRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/todo/{id}"
+    };
+  }
+
+}
